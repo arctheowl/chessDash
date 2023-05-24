@@ -3,13 +3,12 @@ import PlayerList from "./PlayerList";
 
 const SearchPage = () => {
   const [PlayerName, setPlayerName] = createSignal("");
-  // const [PlayerList, setPlayerList] = createStore<IPlayer[]>([]);
   const [loading, setLoading] = createSignal(false);
   const [showPlayerList, setShowPlayerList] = createSignal(false);
 
   return (
-    <div>
-      <div class="flex gap-2">
+    <div class="">
+      <div class="flex gap-2 justify-center">
         <input
           class="border border-gray-400 rounded-lg px-4 py-2 w-64"
           type="text"

@@ -41,11 +41,12 @@ const WhiteScore = ({ games }: any) => {
     }
   });
   return (
-    <div>
-      Wins as White :{`${whiteScore().wins}`}
-      Loses as White :{`${whiteScore().losses}`}
-      Draws as White :{`${whiteScore().draws}`}
-      Total as White :{`${whiteScore().total}`}
+    <div class="flex border-2 rounded-lg items-center mx-auto w-1/2 gap-3 flex-col">
+      <h1>Score as White</h1>
+      <p>Wins:{`${whiteScore().wins}`}</p>
+      <p>Loses:{`${whiteScore().losses}`}</p>
+      <p>Draws:{`${whiteScore().draws}`}</p>
+      <p>Total Played:{`${whiteScore().total}`}</p>
     </div>
   );
 };

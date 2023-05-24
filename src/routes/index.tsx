@@ -1,5 +1,3 @@
-import { A } from "solid-start";
-import Counter from "~/components/Counter";
 import SearchPage from "~/components/SearchPage";
 
 export default function Home() {
@@ -8,7 +6,6 @@ export default function Home() {
       <h1 class="max-6-xs text-6xl text-sky-700 font-thin uppercase my-16">
         Chess Search
       </h1>
-      {/* <Counter /> */}
       <SearchPage />
     </main>
   );

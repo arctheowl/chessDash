@@ -42,11 +42,12 @@ const BlackScore = ({ games }: any) => {
     }
   });
   return (
-    <div>
-      Wins as Black :{`${blackScore().wins}`}
-      Loses as Black :{`${blackScore().losses}`}
-      Draws as Black :{`${blackScore().draws}`}
-      Total as Black :{`${blackScore().total}`}
+    <div class="flex border-2 rounded-lg items-center mx-auto w-1/2 gap-3 flex-col">
+      <h1>Score as Black</h1>
+      <p>Wins:{`${blackScore().wins}`}</p>
+      <p>Loses:{`${blackScore().losses}`}</p>
+      <p>Draws:{`${blackScore().draws}`}</p>
+      <p>Total Played:{`${blackScore().total}`}</p>
     </div>
   );
 };

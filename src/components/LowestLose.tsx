@@ -13,14 +13,15 @@ const LowestLose = ({ games }: any) => {
     if (
       game?.score === 0 &&
       game?.optRating !== null &&
-      game?.opponent_rating < lowestLose().opponent_rating
+      game?.opponent_rating < lowestLose().opponent_rating &&
+      game?.opponent_rating !== ""
     ) {
       setLowestLose(game);
     }
   });
 
   return (
-    <div class="flex border-2 rounded-lg items-center mx-auto w-1/3 gap-5 flex-col">
+    <div class="flex border-2 rounded-lg items-center mx-auto w-1/2 gap-3 flex-col">
       <p>Lowest Lose:</p>
       <p>{`${lowestLose()?.opponent_rating}`}</p>
       <p>vs</p>

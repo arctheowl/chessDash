@@ -51,7 +51,6 @@ const PlayerList = ({ name, setLoading }: any) => {
         <table class="mx-auto mt-10 border-2 border-black">
           <thead class=" border-b-2 border-black">
             <tr>
-              {/* <th class="px-4 py-2">Index</th> */}
               <th class="border">First Name</th>
               <th class="border">Surname</th>
               <th class="border">Grade</th>
@@ -69,7 +68,6 @@ const PlayerList = ({ name, setLoading }: any) => {
                     i() % 2 == 0 ? "bg-blue-500" : "bg-blue-300"
                   } h-10 rounded-lg border-b-2 border-black`}
                 >
-                  {/* <td class="border px-4 py-2">{i()}</td> */}
                   <td class="border px-4 py-2">
                     {" "}
                     <A href={`/player/${player?.ECF_code}`}>
@@ -86,12 +84,11 @@ const PlayerList = ({ name, setLoading }: any) => {
                     {" "}
                     <A href={`/player/${player?.ECF_code}`}>{player?.rating}</A>
                   </td>
-                  {/* <td class="border px-4 py-2">{player?.category}</td> */}
+
                   <td class="border px-4 py-2">
                     {" "}
                     <A href={`/player/${player?.ECF_code}`}>{player.gender}</A>
                   </td>
-                  {/* <td class="border px-4 py-2">{player.ECF_code}</td> */}
                   <td class="border px-4 py-2">
                     {" "}
                     <A href={`/player/${player?.ECF_code}`}>

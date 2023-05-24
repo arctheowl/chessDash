@@ -20,7 +20,7 @@ const HighestWin = ({ games }: any) => {
   });
 
   return (
-    <div class="flex border-2 rounded-lg items-center mx-auto w-1/3 gap-5 flex-col">
+    <div class="flex border-2 rounded-lg items-center w-1/2 gap-3 flex-col">
       <p>Highest Win:</p>
       <p>{`${HighestWin()?.opponent_rating}`}</p>
       <p>vs</p>

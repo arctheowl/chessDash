@@ -13,7 +13,7 @@ const PlayerDash = () => {
   });
 
   return (
-    <div class="mx-auto">
+    <div class="mx-auto md:pt-10">
       <Show
         when={player()?.full_name}
         fallback={
@@ -38,8 +38,6 @@ const PlayerDash = () => {
             )}
           </div>
           <h2> {player()?.full_name}</h2>
-          {/* <h2>MemberType: {player()?.category}</h2> */}
-          {/* <h2>Gender: {player()?.gender}</h2> */}
           <h2>
             <A href={`https://ratings.fide.com/profile/${player()?.FIDE_no}`}>
               Fide Id: {player()?.FIDE_no}
