@@ -9,7 +9,6 @@ const LowestLose = ({ games }: any) => {
   });
 
   games?.forEach((game: any) => {
-    console.log(game);
     if (
       game?.score === 0 &&
       game?.optRating !== null &&
@@ -21,12 +20,13 @@ const LowestLose = ({ games }: any) => {
   });
 
   return (
-    <div class="flex border-2 rounded-lg items-center mx-auto w-1/2 gap-3 flex-col">
-      <p>Lowest Lose:</p>
-      <p>{`${lowestLose()?.opponent_rating}`}</p>
-      <p>vs</p>
-      <p>{`${lowestLose()?.opponent_name}`}</p>
-      {` at ${lowestLose()?.org_name} on ${lowestLose()?.game_date}`}
+    <div class="flex border-2 rounded-lg items-center mx-auto w-1/2 gap-3 flex-col bg-red-300">
+      <p class="text-xl">Lowest Lose:</p>
+      <p class="text-2xl">{`${lowestLose()?.opponent_name}- ${
+        lowestLose()?.opponent_rating
+      }`}</p>
+      <p class="text-lg">{`${lowestLose()?.org_name}`}</p>
+      <p class="text-lg">{`${lowestLose()?.game_date}`}</p>
     </div>
   );
 };

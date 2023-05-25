@@ -41,7 +41,7 @@ const WhiteScore = ({ games }: any) => {
     }
   });
   return (
-    <div class="flex border-2 rounded-lg items-center mx-auto w-1/2 gap-3 flex-col">
+    <div class="flex border-2 rounded-lg items-center mx-auto w-1/2 gap-1 p-2 flex-col">
       <h1>Score as White</h1>
       <p>Wins:{`${whiteScore().wins}`}</p>
       <p>Loses:{`${whiteScore().losses}`}</p>

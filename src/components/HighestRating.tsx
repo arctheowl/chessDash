@@ -1,4 +1,4 @@
-import { createSignal } from "solid-js";
+import { Show, createSignal } from "solid-js";
 
 type IRating = {
   date?: string | null;
@@ -22,10 +22,22 @@ const HighestRating = ({ games }: any) => {
       }
     }
   });
+  console.log(highestRating());
   return (
-    <div class="flex border-2 rounded-lg items-center mx-auto md:w-1/3 gap-5 flex-col p-2">
-      <p>Highest Rating:</p>
-      <p>{`${highestRating().rating} on ${highestRating().date}`}</p>
+    <div class="flex border-2 rounded-lg items-center mx-auto md:w-1/3 gap-2 flex-col p-2">
+      <Show
+        when={highestRating().rating != 0}
+        fallback={
+          <div
+            class="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
+            role="status"
+          />
+        }
+      >
+        <p class="text-2xl">Highest Rating:</p>
+        <p class="text-2xl">{`${highestRating().rating}`}</p>
+        <p class="text-lg">{`${highestRating().date}`}</p>
+      </Show>
     </div>
   );
 };

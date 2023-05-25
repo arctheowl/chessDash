@@ -42,7 +42,7 @@ const BlackScore = ({ games }: any) => {
     }
   });
   return (
-    <div class="flex border-2 rounded-lg items-center mx-auto w-1/2 gap-3 flex-col">
+    <div class="flex border-2 rounded-lg items-center mx-auto w-1/2 gap-1 p-2 flex-col bg-stone-800 text-white">
       <h1>Score as Black</h1>
       <p>Wins:{`${blackScore().wins}`}</p>
       <p>Loses:{`${blackScore().losses}`}</p>
