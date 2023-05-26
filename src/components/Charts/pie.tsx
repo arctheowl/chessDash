@@ -1,33 +1,60 @@
-import { createStore } from "solid-js/store";
+import { createEffect, createSignal, onMount } from "solid-js";
+import { Chart, Title, Tooltip, Legend, Colors } from "chart.js";
+import { Pie } from "solid-chartjs";
 
-import { SolidApexCharts } from "solid-apexcharts";
+const MyChart = (props: any) => {
+  /**
+   * You must register optional elements before using the chart,
+   * otherwise you will have the most primitive UI
+   */
 
-export const Pie = () => {
-  const [options] = createStore({
-    chart: {
-      id: "solidchart-example",
-    },
-    xaxis: {
-      categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998],
-    },
+  onMount(() => {
+    Chart.register(Title, Tooltip, Legend, Colors);
   });
-  const [series] = createStore({
-    list: [
+
+  const [score, setScore] = createSignal({
+    wins: null,
+    losses: null,
+    draws: null,
+    total: null,
+  });
+  createEffect(() => {
+    setScore(props.score);
+  });
+  console.log(props);
+
+  const chartData = {
+    labels: ["Wins", "Loses", "Draws"],
+    datasets: [
       {
-        name: "series-1",
-        data: [30, 40, 35, 50, 49, 60, 70, 91],
+        data: [props.score.wins, props.score.losses, props.score.draws],
       },
     ],
-  });
-
-  // options and series can be a store or signal
+  };
+  const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      tooltip: {
+        callbacks: {
+          footer: function (context: any) {
+            let percentage = (
+              (context[0].parsed / props.score.total) *
+              100
+            ).toFixed(0);
+            let label = [percentage + "%"];
+            console.log(context);
+            return label;
+          },
+        },
+      },
+    },
+  };
 
   return (
-    <SolidApexCharts
-      width="500"
-      type="bar"
-      options={options}
-      series={series.list}
-    />
+    <div>
+      <Pie data={chartData} options={chartOptions} width={250} height={250} />
+    </div>
   );
 };
+export default MyChart;

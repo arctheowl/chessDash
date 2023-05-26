@@ -1,19 +1,21 @@
-import { For, createResource } from "solid-js";
+import { For, createEffect, createResource } from "solid-js";
 import { createStore } from "solid-js/store";
 import { A } from "solid-start";
 
-const PlayerList = ({ name, setLoading }: any) => {
+const PlayerList = (props: any) => {
   //   const [PlayerList] = createResource(async () => {
   //     return fetch(
   //       `https://www.ecfrating.org.uk/v2/new/api.php?v2/games/Standard/player/${name}`
   //     ).then((res) => res.json());
   //   });
 
-  setLoading(true);
+  props.setLoading(true);
   console.log("Searching for:", name);
   //   let playerList: any = [];
   const [finalPlayerList, setFinalPlayerList] = createStore<any>([]);
-  fetch(`https://www.ecfrating.org.uk/v2/new/api.php?v2/players/name/${name}`)
+  fetch(
+    `https://www.ecfrating.org.uk/v2/new/api.php?v2/players/name/${props.name}`
+  )
     .then(async (res) => {
       const resPlayerList = await res.json();
       // setPlayerList(resPlayerList?.players);
@@ -41,6 +43,7 @@ const PlayerList = ({ name, setLoading }: any) => {
           );
         }
       });
+      props.setLoading(false);
     })
     .catch((err) => console.log("DO NOTHING", err));
 

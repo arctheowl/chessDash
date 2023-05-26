@@ -1,22 +1,23 @@
-import { createSignal } from "solid-js";
+import { createEffect, createSignal } from "solid-js";
 
-const LowestLose = ({ games }: any) => {
+const LowestLose = (props: any) => {
   const [lowestLose, setLowestLose] = createSignal({
     opponent_rating: 1000000,
     game_date: "",
     org_name: "",
     opponent_name: "",
   });
-
-  games?.forEach((game: any) => {
-    if (
-      game?.score === 0 &&
-      game?.optRating !== null &&
-      game?.opponent_rating < lowestLose().opponent_rating &&
-      game?.opponent_rating !== ""
-    ) {
-      setLowestLose(game);
-    }
+  createEffect(() => {
+    props.games?.forEach((game: any) => {
+      if (
+        game?.score === 0 &&
+        game?.optRating !== null &&
+        game?.opponent_rating < lowestLose().opponent_rating &&
+        game?.opponent_rating !== ""
+      ) {
+        setLowestLose(game);
+      }
+    });
   });
 
   return (

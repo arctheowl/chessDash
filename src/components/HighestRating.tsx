@@ -1,28 +1,30 @@
-import { Show, createSignal } from "solid-js";
+import { Show, createEffect, createSignal, onMount } from "solid-js";
 
 type IRating = {
   date?: string | null;
   rating?: number;
 };
 
-const HighestRating = ({ games }: any) => {
+const HighestRating = (props: { games: any[] }) => {
   const [highestRating, setHighestRating] = createSignal<IRating>({
     date: null,
     rating: 0,
   });
 
-  games?.forEach((game: any) => {
-    if (game.player_rating !== null) {
-      if (game.player_rating > highestRating().rating!) {
-        let newHighestRating = {
-          date: game.game_date,
-          rating: game.player_rating,
-        };
-        setHighestRating(newHighestRating);
+  createEffect(() => {
+    props.games?.forEach((game: any) => {
+      if (game.player_rating !== null) {
+        if (game.player_rating > highestRating().rating!) {
+          let newHighestRating = {
+            date: game.game_date,
+            rating: game.player_rating,
+          };
+          setHighestRating(newHighestRating);
+        }
       }
-    }
+    });
   });
-  console.log(highestRating());
+
   return (
     <div class="flex border-2 rounded-lg items-center mx-auto md:w-1/3 gap-2 flex-col p-2">
       <Show

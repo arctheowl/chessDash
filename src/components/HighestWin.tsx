@@ -1,6 +1,6 @@
-import { Show, createSignal } from "solid-js";
+import { Show, createEffect, createSignal } from "solid-js";
 
-const HighestWin = ({ games }: any) => {
+const HighestWin = (props: any) => {
   const [HighestWin, setHighestWin] = createSignal({
     opponent_rating: 0,
     game_date: "",
@@ -9,15 +9,17 @@ const HighestWin = ({ games }: any) => {
     opponent_name: "",
   });
 
-  games?.forEach((game: any) => {
-    if (
-      game?.score === 1 &&
-      game?.optRating !== null &&
-      game?.opponent_rating > HighestWin().opponent_rating
-    ) {
-      console.log("This was a highest win", +game.score);
-      setHighestWin(game);
-    }
+  createEffect(() => {
+    props.games?.forEach((game: any) => {
+      if (
+        game?.score === 1 &&
+        game?.optRating !== null &&
+        game?.opponent_rating > HighestWin().opponent_rating
+      ) {
+        console.log("This was a highest win", +game.score);
+        setHighestWin(game);
+      }
+    });
   });
 
   return (
