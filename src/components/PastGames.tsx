@@ -5,6 +5,7 @@ import HighestRating from "./HighestRating";
 import WhiteScore from "./WhiteScore";
 import BlackScore from "./BlackScore";
 import { For, Show, createResource } from "solid-js";
+import LineChart from "./Charts/gradeHistory";
 
 const PastGames = () => {
   const id = useParams().id;
@@ -26,6 +27,11 @@ const PastGames = () => {
         <WhiteScore games={GameHistory()?.games} />
         <BlackScore games={GameHistory()?.games} />
       </div>
+      <div class="w-1/2 mx-auto">
+        <h1 class="text-2xl">Game History</h1>
+        <LineChart games={GameHistory()?.games} />
+      </div>
+
       {/* <p>Past Games: {GameHistory()?.games.length}</p> */}
       <div class="pt-10">
         <h1 class="text-2xl">Game History</h1>

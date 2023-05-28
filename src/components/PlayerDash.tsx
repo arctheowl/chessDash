@@ -3,6 +3,7 @@ import PastGames from "./PastGames";
 import { Show, createResource } from "solid-js";
 import { FaSolidMedal } from "solid-icons/fa";
 import { IoMan, IoWoman } from "solid-icons/io";
+import LineChart from "./Charts/gradeHistory";
 
 const PlayerDash = () => {
   const id = useParams().id;
