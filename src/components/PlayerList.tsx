@@ -1,28 +1,26 @@
-import { For, createEffect, createResource } from "solid-js";
+import { For } from "solid-js";
 import { createStore } from "solid-js/store";
 import { A } from "solid-start";
 
 const PlayerList = (props: any) => {
-  //   const [PlayerList] = createResource(async () => {
-  //     return fetch(
-  //       `https://www.ecfrating.org.uk/v2/new/api.php?v2/games/Standard/player/${name}`
-  //     ).then((res) => res.json());
-  //   });
-
   props.setLoading(true);
-  console.log("Searching for:", name);
-  //   let playerList: any = [];
+  console.log("Searching for:", props.name);
   const [finalPlayerList, setFinalPlayerList] = createStore<any>([]);
   fetch(
-    `https://www.ecfrating.org.uk/v2/new/api.php?v2/players/name/${props.name}`
+    `https://www.ecfrating.org.uk/v2/new/api.php?v2/players/name/${props.name}`,
+    {
+      method: "get",
+      // mode: "no-cors",
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json",
+      },
+    }
   )
     .then(async (res) => {
       const resPlayerList = await res.json();
-      // setPlayerList(resPlayerList?.players);
-
       let playerRating = 0;
       resPlayerList?.players.forEach((player: any) => {
-        // console.log(player?.ECF_code);
         if (player.member_no) {
           fetch(
             `https://www.ecfrating.org.uk/v2/new/api.php?v2/ratings/S/${player?.ECF_code}/2023-05-02`
@@ -45,7 +43,7 @@ const PlayerList = (props: any) => {
       });
       props.setLoading(false);
     })
-    .catch((err) => console.log("DO NOTHING", err));
+    .catch((err) => console.log("ERORR", err));
 
   return (
     <div>
