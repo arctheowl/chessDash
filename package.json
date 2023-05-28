@@ -2,7 +2,7 @@
   "name": "chessDash",
   "scripts": {
     "dev": "solid-start dev",
-    "build": "solid-start build",
+    "build": "vite build src --emptyOutDir",
     "start": "solid-start start"
   },
   "type": "module",
@@ -36,7 +36,9 @@
     "solid-icons": "^1.0.4",
     "solid-js": "^1.7.2",
     "solid-start": "^0.2.26",
-    "undici": "^5.15.1"
+    "solid-start-vercel": "^0.2.26",
+    "undici": "^5.15.1",
+    "vercel": "^30.0.0"
   },
   "engines": {
     "node": ">=16"
