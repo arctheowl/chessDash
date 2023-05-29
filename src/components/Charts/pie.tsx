@@ -21,7 +21,7 @@ const MyChart = (props: any) => {
   createEffect(() => {
     setScore(props.score);
   });
-  console.log(props);
+  console.log(props.score);
 
   const chartData = {
     labels: ["Wins", "Loses", "Draws"],

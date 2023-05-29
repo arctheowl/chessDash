@@ -50,12 +50,12 @@ const BlackScore = (props: any) => {
       <p>Loses:{`${blackScore().losses}`}</p>
       <p>Draws:{`${blackScore().draws}`}</p>
       <p>Total Played:{`${blackScore().total}`}</p>
-      <MyChart
+      {/* <MyChart
         score={blackScore()}
         // wins={whiteScore().wins}
         // losses={whiteScore().losses}
         // draws={whiteScore().draws}
-      />
+      /> */}
     </div>
   );
 };

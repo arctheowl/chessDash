@@ -32,6 +32,11 @@ const LineChart = (props: any) => {
   const chartOptions = {
     responsive: true,
     maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: false,
+      },
+    },
   };
 
   return (

@@ -45,16 +45,16 @@ const WhiteScore = (props: any) => {
   return (
     <div class="flex border-2 rounded-lg items-center mx-auto w-1/2 gap-1 p-2 flex-col">
       <h1>Score as White</h1>
-      {/* <p>Wins:{`${whiteScore().wins}`}</p>
+      <p>Wins:{`${whiteScore().wins}`}</p>
       <p>Loses:{`${whiteScore().losses}`}</p>
-      <p>Draws:{`${whiteScore().draws}`}</p> */}
+      <p>Draws:{`${whiteScore().draws}`}</p>
       <p>Total Played:{`${whiteScore().total}`}</p>
-      <MyChart
+      {/* <MyChart
         score={whiteScore()}
-        // wins={whiteScore().wins}
-        // losses={whiteScore().losses}
-        // draws={whiteScore().draws}
-      />
+        wins={whiteScore().wins}
+        losses={whiteScore().losses}
+        draws={whiteScore().draws}
+      /> */}
     </div>
   );
 };
