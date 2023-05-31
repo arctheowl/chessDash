@@ -1,4 +1,4 @@
-import { useParams } from "solid-start";
+import { A, useParams } from "solid-start";
 import HighestWin from "./HighestWin";
 import LowestLose from "./LowestLose";
 import HighestRating from "./HighestRating";
@@ -56,9 +56,9 @@ const PastGames = () => {
               <th class="px-10 text-center  border-2 border-gray-600">
                 Opt Rating
               </th>
-              <th class="px-10 text-center  border-2 border-gray-600">
+              {/* <th class="px-10 text-center  border-2 border-gray-600">
                 Opt ECF Code
-              </th>
+              </th> */}
               <th class="px-10 text-center  border-2 border-gray-600">Event</th>
             </tr>
           </thead>
@@ -90,14 +90,16 @@ const PastGames = () => {
                         {game.player_rating}
                       </td>
                       <td class="text-center border-2 border-gray-600">
-                        {game.opponent_name}
+                        <a href={`/player/${game.opponent_no}`}>
+                          {game.opponent_name}
+                        </a>
                       </td>
                       <td class="text-center border-2 border-gray-600">
                         {game.opponent_rating}
                       </td>
-                      <td class="text-center border-2 border-gray-600">
+                      {/* <td class="text-center border-2 border-gray-600">
                         {game.opponent_no}
-                      </td>
+                      </td> */}
                       {/* <td class="text-center">{game.optECFType}</td> */}
                       <td class="text-center border-2 border-gray-600">
                         {game?.org_name}
