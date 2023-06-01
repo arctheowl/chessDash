@@ -10,7 +10,7 @@ const SearchPage = () => {
     setLoading(true);
     setPlayerList([]);
     e.preventDefault();
-    fetch(`http://chess-dash.vercel.app/api/fetchPlayers/${PlayerName()}`)
+    fetch(`https://chess-dash.vercel.app/api/fetchPlayers/${PlayerName()}`)
       .then(async (res) => {
         const resPlayerList = await res.json();
         let playerRating = 0;
