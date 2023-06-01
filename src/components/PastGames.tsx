@@ -27,7 +27,7 @@ const PastGames = () => {
         <WhiteScore games={GameHistory()?.games} />
         <BlackScore games={GameHistory()?.games} />
       </div>
-      <div class="w-1/2 mx-auto">
+      <div class="md:w-1/2 p-2 mx-auto">
         <h1 class="text-2xl">Game History</h1>
         <LineChart games={GameHistory()?.games} />
       </div>
