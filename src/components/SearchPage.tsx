@@ -10,14 +10,14 @@ const SearchPage = () => {
     setLoading(true);
     setPlayerList([]);
     e.preventDefault();
-    fetch(`http://localhost:3000/api/fetchPlayers/${PlayerName()}`)
+    fetch(`http://chess-dash.vercel.app/api/fetchPlayers/${PlayerName()}`)
       .then(async (res) => {
         const resPlayerList = await res.json();
         let playerRating = 0;
         resPlayerList?.players.forEach((player: any) => {
           if (player.member_no) {
             fetch(
-              `http://localhost:3000/api/fetchCodes/${player?.ECF_code}`
+              `https://chess-dash.vercel.app/api/fetchCodes/${player?.ECF_code}`
             ).then((res) =>
               res.json().then((res) => {
                 console.log(res);
