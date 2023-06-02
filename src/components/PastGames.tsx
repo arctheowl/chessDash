@@ -36,30 +36,36 @@ const PastGames = () => {
       <div class="pt-10">
         <h1 class="text-2xl">Game History</h1>
       </div>
-      <div class="w-screen">
-        <table class="w-2/3 mx-auto border-2 ">
-          <thead class="w-full bg-red-200">
+      <div class=" -ml-1 overflow-scroll">
+        <table class="md:w-1/2 md:mx-auto border-2 text-sm md:text-base">
+          <thead class="md:w-full bg-red-200">
             <tr>
               {/* <th class="px-10 text-center border-2 border-gray-600">Index</th> */}
-              <th class="px-10 text-center  border-2 border-gray-600">Date</th>
-              <th class="px-10  border-2 border-gray-600">Color</th>
-              <th class="px-10 text-center  border-2 border-gray-600">Score</th>
-              <th class="px-10 text-center  border-2 border-gray-600">
+              <th class="md:px-10 text-center  border-2 border-gray-600">
+                Date
+              </th>
+              <th class="md:px-10  border-2 border-gray-600">Color</th>
+              <th class="md:px-10 text-center  border-2 border-gray-600">
+                Score
+              </th>
+              <th class="md:px-10 text-center  border-2 border-gray-600">
                 Rating Change
               </th>
-              <th class="px-10 text-center  border-2 border-gray-600">
+              <th class="md:px-10 text-center  border-2 border-gray-600">
                 Rating
               </th>
-              <th class="px-10 text-center  border-2 border-gray-600">
+              <th class="md:px-10 text-center  border-2 border-gray-600">
                 Opponent
               </th>
-              <th class="px-10 text-center  border-2 border-gray-600">
+              <th class="md:px-10 text-center  border-2 border-gray-600">
                 Opt Rating
               </th>
               {/* <th class="px-10 text-center  border-2 border-gray-600">
                 Opt ECF Code
               </th> */}
-              <th class="px-10 text-center  border-2 border-gray-600">Event</th>
+              <th class="md:px-10 text-center  border-2 border-gray-600">
+                Event
+              </th>
             </tr>
           </thead>
           <tbody>
