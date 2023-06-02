@@ -74,8 +74,7 @@ const PlayerDash = () => {
             <Show when={player()?.title}>
               <h2>Title: {player()?.title}</h2>
             </Show>
-
-            <h2 class="col-span-2 text-end pr-5">
+            <h2 class="col-start-3 text-end pr-5">
               Last Game: {player()?.date_last_game}
             </h2>
           </Show>
