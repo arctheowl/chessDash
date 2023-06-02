@@ -22,7 +22,6 @@ const PlayerDash = () => {
       `https://www.ecfrating.org.uk/v2/new/api.php?v2/ratings/S/${newId}/${finalDate}`
     ).then((res) => res.json());
   });
-  console.log(player());
   return (
     <div class="mx-auto md:pt-10">
       <Show

@@ -16,7 +16,6 @@ const HighestWin = (props: any) => {
         game?.optRating !== null &&
         game?.opponent_rating > HighestWin().opponent_rating
       ) {
-        console.log("This was a highest win", +game.score);
         setHighestWin(game);
       }
     });

@@ -20,7 +20,6 @@ const SearchPage = () => {
               `https://chess-dash.vercel.app/api/fetchCodes/${player?.ECF_code}`
             ).then((res) =>
               res.json().then((res) => {
-                console.log(res);
                 playerRating = res?.revised_rating;
                 const splitName = player?.full_name.split(",");
                 const [first_name, surname] = [splitName[1], splitName[0]];
@@ -79,7 +78,6 @@ const SearchPage = () => {
           <tbody>
             <For each={PlayerList}>
               {(player, i) => {
-                console.log(player);
                 return (
                   <tr
                     class={`${

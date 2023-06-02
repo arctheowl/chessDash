@@ -4,7 +4,6 @@ import { A } from "solid-start";
 
 const PlayerList = (props: any) => {
   props.setLoading(true);
-  console.log("Searching for:", props.name);
   const [finalPlayerList, setFinalPlayerList] = createStore<any>([]);
   fetch(
     `https://www.ecfrating.org.uk/v2/new/api.php?v2/players/name/${props.name}`,

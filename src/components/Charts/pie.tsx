@@ -43,7 +43,7 @@ const MyChart = (props: any) => {
               100
             ).toFixed(0);
             let label = [percentage + "%"];
-            console.log(context);
+            // console.log(context);
             return label;
           },
         },
