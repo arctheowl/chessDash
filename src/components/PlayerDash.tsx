@@ -4,6 +4,7 @@ import { Show, createResource } from "solid-js";
 import { FaSolidMedal } from "solid-icons/fa";
 import { IoMan, IoWoman } from "solid-icons/io";
 import LineChart from "./Charts/gradeHistory";
+import Percentile from "./percentile";
 
 const PlayerDash = () => {
   const id = useParams().id;
@@ -79,6 +80,7 @@ const PlayerDash = () => {
             </h2>
           </Show>
         </div>
+        <Percentile rating={rating()?.revised_rating} />
 
         <PastGames />
       </Show>
