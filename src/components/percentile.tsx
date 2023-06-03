@@ -7,11 +7,10 @@ type Props = {
 
 const Percentile = ({ rating }: Props) => {
   const [percentile] = createResource(async () => {
-    return fetch(`http://localhost:3000/api/fetchPercentile/${rating}`).then(
+    return fetch(`https://chess-dash.vercel.app/api/fetchPercentile/${rating}`).then(
       (res) => res.json()
     );
   });
-  console.log(percentile());
 
   return (
     <div class="flex border-2 rounded-lg items-center w-1/3  mx-auto gap-3 flex-col mt-2">
