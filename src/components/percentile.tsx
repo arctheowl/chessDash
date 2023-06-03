@@ -13,7 +13,7 @@ const Percentile = ({ rating }: Props) => {
   });
 
   return (
-    <div class="flex border-2 rounded-lg items-center w-1/3  mx-auto gap-3 flex-col mt-2">
+    <div class="flex border-2 rounded-lg items-center md:w-1/3 mx-auto gap-3 flex-col mt-2">
       <Show
         when={percentile() !== undefined}
         fallback={
