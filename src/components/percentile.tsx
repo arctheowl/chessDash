@@ -1,4 +1,4 @@
-import { Show, createResource, createSignal } from "solid-js";
+import { Show, createEffect, createResource, createSignal } from "solid-js";
 
 type Props = {
   data?: number[];
@@ -11,8 +11,10 @@ const Percentile = ({ rating }: Props) => {
       (res) => res.json()
     );
   });
-  console.log(percentile());
-
+  // console.log(percentile());
+  createEffect(() => {
+    percentile();
+  });
   return (
     <div class="flex border-2 rounded-lg items-center w-1/3  mx-auto gap-3 flex-col mt-2">
       <Show
