@@ -6,13 +6,14 @@ type Props = {
 };
 
 const Percentile = ({ rating }: Props) => {
+  const [finalPercentile, setFinalPercentile] = createSignal(0);
   const [percentile] = createResource(async () => {
     return fetch(
       `https://chess-dash.vercel.app/api/fetchPercentile/${rating}`
     ).then((res) => res.json());
   });
   createEffect(() => {
-    percentile();
+    setFinalPercentile(percentile());
   });
   return (
     <div class="flex border-2 rounded-lg items-center md:w-1/3 mx-auto gap-3 flex-col mt-2">
@@ -26,7 +27,7 @@ const Percentile = ({ rating }: Props) => {
         }
       >
         <p class="text-xl">Percentile of active players:</p>
-        <p class="text-2xl">{`${percentile().percentile}%`}</p>
+        <p class="text-2xl">{`${finalPercentile()}%`}</p>
       </Show>
     </div>
   );
