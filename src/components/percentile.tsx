@@ -13,7 +13,7 @@ const Percentile = ({ rating }: Props) => {
     ).then((res) => res.json());
   });
   createEffect(() => {
-    setFinalPercentile(percentile());
+    setFinalPercentile(percentile().percentile);
   });
   return (
     <div class="flex border-2 rounded-lg items-center md:w-1/3 mx-auto gap-3 flex-col mt-2">
