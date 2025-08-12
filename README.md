@@ -1,36 +1,135 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Chess Rating Dashboard
+
+A modern web application for tracking chess player ratings and performance over time using the English Chess Federation (ECF) database.
+
+## Features
+
+- 🔍 **Player Search**: Search for chess players by name using the ECF database
+- 📊 **Rating Tracking**: View detailed rating history with interactive charts
+- 📈 **Performance Analytics**: Track rating changes and performance trends over time
+- 🎨 **Modern UI**: Beautiful, responsive design with dark theme
+- ⚡ **Real-time Data**: Live data from the ECF API
+
+## Tech Stack
+
+- **Frontend**: Next.js 15, React 19, TypeScript
+- **Styling**: Tailwind CSS
+- **Charts**: Recharts
+- **Icons**: Lucide React
+- **API**: ECF Rating API
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
+- Node.js 18+ 
+- npm or yarn
+
+### Installation
+
+1. Clone the repository:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone <repository-url>
+cd chess-dashboard
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Install dependencies:
+```bash
+npm install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. Run the development server:
+```bash
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+4. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-## Learn More
+## Usage
 
-To learn more about Next.js, take a look at the following resources:
+### Searching for Players
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. Use the search bar at the top of the page
+2. Type a player's name (minimum 2 characters)
+3. Select a player from the dropdown results
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Viewing Player Information
 
-## Deploy on Vercel
+Once you select a player, you'll see:
+- Player profile with current rating, title, federation, and club
+- Interactive rating history chart
+- Performance statistics (highest/lowest ratings, games recorded)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Rating History Chart
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+The chart displays:
+- Rating progression over time
+- Interactive tooltips with game details
+- Tournament and opponent information (when available)
+- Performance statistics below the chart
+
+## API Endpoints
+
+The application uses the following API routes:
+
+- `GET /api/players?q=<search_query>` - Search for players by name
+- `GET /api/players/[id]/history` - Get player rating history
+
+These routes proxy requests to the ECF Rating API.
+
+## Project Structure
+
+```
+src/
+├── app/
+│   ├── api/
+│   │   └── players/
+│   │       ├── route.ts
+│   │       └── [id]/
+│   │           └── history/
+│   │               └── route.ts
+│   ├── globals.css
+│   ├── layout.tsx
+│   └── page.tsx
+├── components/
+│   ├── PlayerCard.tsx
+│   ├── PlayerSearch.tsx
+│   └── RatingChart.tsx
+└── types/
+    └── chess.ts
+```
+
+## Development
+
+### Available Scripts
+
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run start` - Start production server
+- `npm run lint` - Run ESLint
+
+### Adding New Features
+
+1. Create new components in `src/components/`
+2. Add TypeScript types in `src/types/`
+3. Create API routes in `src/app/api/`
+4. Update the main page in `src/app/page.tsx`
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests if applicable
+5. Submit a pull request
+
+## License
+
+This project is open source and available under the [MIT License](LICENSE).
+
+## Acknowledgments
+
+- [ECF Rating API](https://www.ecfrating.org.uk/) for providing chess player data
+- [Recharts](https://recharts.org/) for the charting library
+- [Tailwind CSS](https://tailwindcss.com/) for styling
+- [Next.js](https://nextjs.org/) for the React framework

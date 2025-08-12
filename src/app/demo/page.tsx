@@ -1,48 +1,26 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { Search, User, TrendingUp, Calendar, Play, ArrowLeft } from 'lucide-react';
-import Link from 'next/link';
+import { useState } from 'react';
+import { Search, User, TrendingUp, Calendar } from 'lucide-react';
 import PlayerSearch from '@/components/PlayerSearch';
 import PlayerCard from '@/components/PlayerCard';
 import RatingChart from '@/components/RatingChart';
 import ThemeSwitcher from '@/components/ThemeSwitcher';
 import { Player, RatingHistory } from '@/types/chess';
+import { samplePlayers, sampleRatingHistory } from '@/lib/sample-data';
 import { useTheme } from '@/lib/ThemeContext';
-import { getThemeClasses, getGradientClass } from '@/lib/themeUtils';
+import { getThemeClasses, getGradientClass, getAvatarGradientClass } from '@/lib/themeUtils';
 
-export default function ChessDashboard() {
+export default function DemoPage() {
   const { currentTheme } = useTheme();
   const themeClasses = getThemeClasses(currentTheme);
   const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null);
   const [ratingHistory, setRatingHistory] = useState<RatingHistory[]>([]);
-  const [loading, setLoading] = useState(false);
-
-  const fetchRatingHistory = async (playerId: string) => {
-    setLoading(true);
-    try {
-      const response = await fetch(`/api/players/${playerId}/history`);
-      if (response.ok) {
-        const data = await response.json();
-        console.log('Rating history data:', data);
-        // The API returns the games array directly, not wrapped in a ratings property
-        setRatingHistory(Array.isArray(data) ? data : []);
-      }
-    } catch (error) {
-      console.error('Error fetching rating history:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handlePlayerSelect = (player: Player) => {
     setSelectedPlayer(player);
-    fetchRatingHistory(player.ECF_code);
-  };
-
-  const handleBackToSearch = () => {
-    setSelectedPlayer(null);
-    setRatingHistory([]);
+    // Use sample rating history for demo
+    setRatingHistory(sampleRatingHistory);
   };
 
   return (
@@ -54,22 +32,17 @@ export default function ChessDashboard() {
             <ThemeSwitcher />
           </div>
           <h1 className={`text-5xl font-bold ${themeClasses.textPrimary} mb-4`}>
-            Chess Rating Dashboard
+            Chess Rating Dashboard - Demo
           </h1>
-          <p className={`text-xl ${themeClasses.textSecondary} mb-6`}>
+          <p className={`text-xl ${themeClasses.textSecondary} mb-4`}>
             Track player ratings and performance over time
           </p>
-          
-          {/* Demo Link - Only show when no player is selected */}
-          {!selectedPlayer && (
-            <Link 
-              href="/demo"
-              className={`inline-flex items-center gap-2 ${themeClasses.buttonPrimary} px-6 py-3 rounded-lg font-medium transition-colors`}
-            >
-              <Play className="w-5 h-5" />
-              Try Demo with Sample Data
-            </Link>
-          )}
+          <div className="bg-yellow-500/20 border border-yellow-500/30 rounded-lg p-4 max-w-2xl mx-auto">
+            <p className="text-yellow-300 text-sm">
+              <strong>Demo Mode:</strong> This is a demonstration using sample data. 
+              Try searching for "Magnus", "Hikaru", or "Judit" to see the features in action.
+            </p>
+          </div>
         </div>
 
         {/* Search Section */}
@@ -77,35 +50,46 @@ export default function ChessDashboard() {
           <PlayerSearch onPlayerSelect={handlePlayerSelect} />
         </div>
 
+        {/* Sample Players Quick Access */}
+        <div className="max-w-4xl mx-auto mb-12">
+          <h3 className={`text-xl font-semibold ${themeClasses.textPrimary} mb-4 text-center`}>
+            Quick Demo - Try these players:
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {samplePlayers.map((player) => (
+              <button
+                key={player.ECF_code}
+                onClick={() => handlePlayerSelect(player)}
+                className={`${themeClasses.surface} rounded-xl p-4 ${themeClasses.surfaceHover} transition-colors text-left`}
+              >
+                <div className="flex items-center gap-3">
+                  <div className={`w-12 h-12 ${getAvatarGradientClass(currentTheme)} rounded-full flex items-center justify-center`}>
+                    <User className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <div className={`${themeClasses.textPrimary} font-medium`}>{player.full_name}</div>
+                    <div className={`${themeClasses.textSecondary} text-sm`}>
+                      Rating: {player.rating} • {player.title}
+                    </div>
+                  </div>
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+
         {/* Player Information and Charts */}
         {selectedPlayer && (
           <div className="space-y-8">
-            {/* Back to Search Button */}
-            <div className="flex justify-start">
-              <button
-                onClick={handleBackToSearch}
-                className={`inline-flex items-center gap-2 ${themeClasses.buttonSecondary} px-4 py-2 rounded-lg font-medium transition-colors`}
-              >
-                <ArrowLeft className="w-4 h-4" />
-                Back to Search
-              </button>
-            </div>
-
             <PlayerCard player={selectedPlayer} ratingHistory={ratingHistory} />
             
-            {loading ? (
-              <div className="flex justify-center">
-                <div className={`animate-spin rounded-full h-12 w-12 border-b-2 ${themeClasses.border}`}></div>
-              </div>
-            ) : (
-              <div className={`${themeClasses.card} p-8`}>
-                <h2 className={`text-2xl font-bold ${themeClasses.textPrimary} mb-6 flex items-center gap-2`}>
-                  <TrendingUp className={`w-6 h-6 ${themeClasses.iconPrimary}`} />
-                  Rating History
-                </h2>
-                <RatingChart data={ratingHistory} />
-              </div>
-            )}
+            <div className={`${themeClasses.card} p-8`}>
+              <h2 className={`text-2xl font-bold ${themeClasses.textPrimary} mb-6 flex items-center gap-2`}>
+                <TrendingUp className={`w-6 h-6 ${themeClasses.iconPrimary}`} />
+                Rating History (Sample Data)
+              </h2>
+              <RatingChart data={ratingHistory} />
+            </div>
           </div>
         )}
 
