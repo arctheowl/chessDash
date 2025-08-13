@@ -1,9 +1,4 @@
 {
   "/favicon.ico/route": "app/favicon.ico/route.js",
-  "/api/players/route": "app/api/players/route.js",
-  "/api/players/top/route": "app/api/players/top/route.js",
-  "/_not-found/page": "app/_not-found/page.js",
-  "/api/players/[id]/history/route": "app/api/players/[id]/history/route.js",
-  "/page": "app/page.js",
-  "/demo/page": "app/demo/page.js"
+  "/page": "app/page.js"
 }
