@@ -1,13 +1,13 @@
 'use client';
 
-import { useState } from 'react';
-import { Search, User, TrendingUp, Calendar } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Search, User, TrendingUp, Calendar, Loader2, Trophy } from 'lucide-react';
 import PlayerSearch from '@/components/PlayerSearch';
 import PlayerCard from '@/components/PlayerCard';
 import RatingChart from '@/components/RatingChart';
 import ThemeSwitcher from '@/components/ThemeSwitcher';
 import { Player, RatingHistory } from '@/types/chess';
-import { samplePlayers, sampleRatingHistory } from '@/lib/sample-data';
+import { sampleRatingHistory } from '@/lib/sample-data';
 import { useTheme } from '@/lib/ThemeContext';
 import { getThemeClasses, getGradientClass, getAvatarGradientClass } from '@/lib/themeUtils';
 
@@ -16,11 +16,61 @@ export default function DemoPage() {
   const themeClasses = getThemeClasses(currentTheme);
   const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null);
   const [ratingHistory, setRatingHistory] = useState<RatingHistory[]>([]);
+  const [topPlayers, setTopPlayers] = useState<Player[]>([]);
+  const [loadingTopPlayers, setLoadingTopPlayers] = useState(true);
+  const [loadingRatingHistory, setLoadingRatingHistory] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  // Fetch top players on component mount
+  useEffect(() => {
+    const fetchTopPlayers = async () => {
+      setLoadingTopPlayers(true);
+      setError(null);
+      try {
+        const response = await fetch('/api/players/top?limit=10');
+        if (response.ok) {
+          const data = await response.json();
+          setTopPlayers(data.players || []);
+        } else {
+          throw new Error(`Failed to fetch top players: ${response.status}`);
+        }
+      } catch (error) {
+        console.error('Error fetching top players:', error);
+        setError('Failed to load top players. Using sample data instead.');
+      } finally {
+        setLoadingTopPlayers(false);
+      }
+    };
+
+    fetchTopPlayers();
+  }, []);
+
+  const fetchRatingHistory = async (playerId: string) => {
+    setLoadingRatingHistory(true);
+    setError(null);
+    try {
+      const response = await fetch(`/api/players/${playerId}/history`);
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Rating history data:', data);
+        // Handle both direct array and wrapped response
+        const historyData = Array.isArray(data) ? data : (data.ratings || []);
+        setRatingHistory(historyData);
+      } else {
+        throw new Error(`Failed to fetch rating history: ${response.status}`);
+      }
+    } catch (error) {
+      console.error('Error fetching rating history:', error);
+      setError('Failed to load rating history. Using sample data instead.');
+      setRatingHistory(sampleRatingHistory);
+    } finally {
+      setLoadingRatingHistory(false);
+    }
+  };
 
   const handlePlayerSelect = (player: Player) => {
     setSelectedPlayer(player);
-    // Use sample rating history for demo
-    setRatingHistory(sampleRatingHistory);
+    fetchRatingHistory(player.ECF_code);
   };
 
   return (
@@ -39,8 +89,8 @@ export default function DemoPage() {
           </p>
           <div className="bg-yellow-500/20 border border-yellow-500/30 rounded-lg p-4 max-w-2xl mx-auto">
             <p className="text-yellow-300 text-sm">
-              <strong>Demo Mode:</strong> This is a demonstration using sample data. 
-              Try searching for "Magnus", "Hikaru", or "Judit" to see the features in action.
+              <strong>Demo Mode:</strong> This is a demonstration using real player data from the ECF API. 
+              Try searching for any player or click on the top players below to see the features in action.
             </p>
           </div>
         </div>
@@ -50,32 +100,59 @@ export default function DemoPage() {
           <PlayerSearch onPlayerSelect={handlePlayerSelect} />
         </div>
 
-        {/* Sample Players Quick Access */}
-        <div className="max-w-4xl mx-auto mb-12">
-          <h3 className={`text-xl font-semibold ${themeClasses.textPrimary} mb-4 text-center`}>
-            Quick Demo - Try these players:
+        {/* Top Players Section */}
+        <div className="max-w-6xl mx-auto mb-12">
+          <h3 className={`text-xl font-semibold ${themeClasses.textPrimary} mb-4 text-center flex items-center justify-center gap-2`}>
+            <Trophy className="w-5 h-5" />
+            Top 10 Players by Rating
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {samplePlayers.map((player) => (
-              <button
-                key={player.ECF_code}
-                onClick={() => handlePlayerSelect(player)}
-                className={`${themeClasses.surface} rounded-xl p-4 ${themeClasses.surfaceHover} transition-colors text-left`}
-              >
-                <div className="flex items-center gap-3">
-                  <div className={`w-12 h-12 ${getAvatarGradientClass(currentTheme)} rounded-full flex items-center justify-center`}>
-                    <User className="w-6 h-6 text-white" />
+          
+          {error && (
+            <div className="bg-red-500/20 border border-red-500/30 rounded-lg p-4 mb-6">
+              <p className="text-red-300 text-sm">{error}</p>
+            </div>
+          )}
+          
+          {loadingTopPlayers ? (
+            <div className="flex items-center justify-center py-12">
+              <Loader2 className="w-8 h-8 animate-spin text-blue-400" />
+              <span className={`ml-2 ${themeClasses.textSecondary}`}>Loading top players...</span>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+              {topPlayers.map((player, index) => (
+                <button
+                  key={player.ECF_code}
+                  onClick={() => handlePlayerSelect(player)}
+                  className={`${themeClasses.surface} rounded-xl p-4 ${themeClasses.surfaceHover} transition-colors text-left relative`}
+                >
+                  {/* Rank badge */}
+                  <div className="absolute top-2 right-2 w-6 h-6 bg-yellow-500 text-black text-xs font-bold rounded-full flex items-center justify-center">
+                    {index + 1}
                   </div>
-                  <div>
-                    <div className={`${themeClasses.textPrimary} font-medium`}>{player.full_name}</div>
-                    <div className={`${themeClasses.textSecondary} text-sm`}>
-                      Rating: {player.rating} • {player.title}
+                  
+                  <div className="flex items-center gap-3">
+                    <div className={`w-12 h-12 ${getAvatarGradientClass(currentTheme)} rounded-full flex items-center justify-center`}>
+                      <User className="w-6 h-6 text-white" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className={`${themeClasses.textPrimary} font-medium truncate`}>
+                        {player.full_name}
+                      </div>
+                      <div className={`${themeClasses.textSecondary} text-sm`}>
+                        Rating: {player.rating} • {player.title}
+                      </div>
+                      {player.federation && (
+                        <div className={`${themeClasses.textSecondary} text-xs`}>
+                          {player.federation}
+                        </div>
+                      )}
                     </div>
                   </div>
-                </div>
-              </button>
-            ))}
-          </div>
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Player Information and Charts */}
@@ -86,9 +163,24 @@ export default function DemoPage() {
             <div className={`${themeClasses.card} p-8`}>
               <h2 className={`text-2xl font-bold ${themeClasses.textPrimary} mb-6 flex items-center gap-2`}>
                 <TrendingUp className={`w-6 h-6 ${themeClasses.iconPrimary}`} />
-                Rating History (Sample Data)
+                Rating History
+                {loadingRatingHistory && <Loader2 className="w-5 h-5 animate-spin" />}
               </h2>
-              <RatingChart data={ratingHistory} />
+              
+              {error && (
+                <div className="bg-red-500/20 border border-red-500/30 rounded-lg p-4 mb-6">
+                  <p className="text-red-300 text-sm">{error}</p>
+                </div>
+              )}
+              
+              {loadingRatingHistory ? (
+                <div className="flex items-center justify-center py-12">
+                  <Loader2 className="w-8 h-8 animate-spin text-blue-400" />
+                  <span className={`ml-2 ${themeClasses.textSecondary}`}>Loading rating history...</span>
+                </div>
+              ) : (
+                <RatingChart data={ratingHistory} />
+              )}
             </div>
           </div>
         )}

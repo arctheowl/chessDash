@@ -1,20 +1,33 @@
 'use client';
 
 import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
   Tooltip,
-  ResponsiveContainer,
-  Area,
-  AreaChart
-} from 'recharts';
+  Legend,
+  Filler,
+} from 'chart.js';
+import { Line } from 'react-chartjs-2';
 import { RatingHistory } from '@/types/chess';
 import { useState } from 'react';
 import { useTheme } from '@/lib/ThemeContext';
 import { getThemeClasses, getThemeColorHex } from '@/lib/themeUtils';
+
+// Register Chart.js components
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  Filler
+);
 
 interface RatingChartProps {
   data: RatingHistory[];
@@ -23,8 +36,7 @@ interface RatingChartProps {
 export default function RatingChart({ data }: RatingChartProps) {
   const { currentTheme } = useTheme();
   const themeClasses = getThemeClasses(currentTheme);
-  console.log('RatingChart received data:', data);
-  
+
   // Filter out games with player rating of 0, missing opponent, or missing score
   const filteredData = data.filter(item => 
     Number(item.player_rating) > 0 && 
@@ -51,56 +63,6 @@ export default function RatingChart({ data }: RatingChartProps) {
     index: index
   }));
 
-  console.log('Chart data after processing:', chartData);
-
-  const CustomTooltip = ({ active, payload, label }: any) => {
-    if (active && payload && payload.length) {
-      const data = payload[0].payload;
-      
-      // Convert score to readable result
-      const getResultText = (score: string) => {
-        const scoreNum = parseFloat(score);
-        if (scoreNum === 1) return 'Win';
-        if (scoreNum === 5) return 'Draw';
-        if (scoreNum === 0) return 'Loss';
-        return score; // Fallback to original score if unknown
-      };
-
-      // Find the correct data point using the unique key
-      const uniqueKey = data.key;
-      const actualData = chartData.find(item => item.key === uniqueKey);
-
-      return (
-        <div className={`bg-white/90 backdrop-blur-lg p-4 rounded-lg border border-white/20 shadow-lg`}>
-          <p className="text-gray-800 font-medium">{`Date: ${label}`}</p>
-          <p style={{ color: getThemeColorHex(currentTheme, 'primary') }} className="font-semibold">
-            {`Rating: ${payload[0].value}`}
-          </p>
-          {actualData?.event_name && (
-            <p className="text-gray-600 text-sm">
-              {`Event: ${actualData.event_name}`}
-            </p>
-          )}
-          {actualData?.opponent_name && (
-            <p className="text-gray-600 text-sm">
-              {`Opponent: ${actualData.opponent_name}`}
-            </p>
-          )}
-          {actualData?.opponent_rating && (
-            <p className="text-gray-600 text-sm">
-              {`Opponent Rating: ${actualData.opponent_rating}`}
-            </p>
-          )}
-          {actualData?.score && (
-            <p className="text-gray-600 text-sm">
-              {`Result: ${getResultText(actualData.score)}`}
-            </p>
-          )}
-        </div>
-      );
-    }
-    return null;
-  };
 
   if (chartData.length === 0) {
     return (
@@ -121,43 +83,141 @@ export default function RatingChart({ data }: RatingChartProps) {
   const yAxisMin = Math.max(500, minRating - ratingRange * 0.1);
   const yAxisMax = maxRating + ratingRange * 0.1;
 
+  // Convert score to readable result
+  const getResultText = (score: string) => {
+
+    const scoreNum = parseInt(score);
+
+    
+    switch (scoreNum) {
+      case 1:
+        return 'Win';
+      case 5:
+        return 'Draw';
+      default:
+        return 'Loss';
+    }
+  };
+
+  const chartConfig = {
+    data: {
+      labels: chartData.map(d => d.date),
+      datasets: [
+        {
+          label: 'Rating',
+          data: chartData.map(d => d.rating),
+          borderColor: getThemeColorHex(currentTheme, 'primary'),
+          backgroundColor: getThemeColorHex(currentTheme, 'primary') + '20',
+          borderWidth: 3,
+          pointBackgroundColor: getThemeColorHex(currentTheme, 'primary'),
+          pointBorderColor: getThemeColorHex(currentTheme, 'primary'),
+          pointBorderWidth: 2,
+          pointRadius: 4,
+          pointHoverRadius: 6,
+          pointHoverBorderWidth: 2,
+          fill: false,
+          tension: 0.1,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: {
+        intersect: false,
+        mode: 'index' as const,
+      },
+      plugins: {
+        legend: {
+          display: false,
+        },
+        tooltip: {
+          backgroundColor: 'rgba(255, 255, 255, 0.9)',
+          titleColor: '#1f2937',
+          bodyColor: '#374151',
+          borderColor: 'rgba(255, 255, 255, 0.2)',
+          borderWidth: 1,
+          cornerRadius: 8,
+          displayColors: false,
+          callbacks: {
+            title: (context: any) => {
+              return `Date: ${context[0].label}
+Rating: ${context[0].parsed.y}`;
+            },
+            label: (context: any) => {
+              const dataIndex = context.dataIndex;
+              const dataPoint = chartData[dataIndex];
+
+              
+              let label = ``;
+              
+              if (dataPoint?.event_name) {
+                label += `\nEvent: ${dataPoint.event_name}`;
+              }
+              if (dataPoint?.opponent_name) {
+                label += `\nOpponent: ${dataPoint.opponent_name}`;
+              }
+              if (dataPoint?.opponent_rating) {
+                label += `\nOpponent Rating: ${dataPoint.opponent_rating}`;
+              }
+              if (true) {
+                label += `\nResult: ${getResultText(dataPoint.score)}`;
+              }
+              
+              return label.split('\n');
+            },
+          },
+        },
+      },
+      scales: {
+        x: {
+          grid: {
+            color: 'rgba(255, 255, 255, 0.1)',
+            drawBorder: false,
+          },
+          ticks: {
+            color: 'rgba(255, 255, 255, 0.7)',
+            font: {
+              size: 12,
+            },
+          },
+          border: {
+            display: false,
+          },
+        },
+        y: {
+          min: yAxisMin,
+          max: yAxisMax,
+          grid: {
+            color: 'rgba(255, 255, 255, 0.1)',
+            drawBorder: false,
+          },
+          ticks: {
+            color: 'rgba(255, 255, 255, 0.7)',
+            font: {
+              size: 12,
+            },
+            callback: (value: any) => value.toFixed(0),
+          },
+          border: {
+            display: false,
+          },
+        },
+      },
+      elements: {
+        point: {
+          hoverBackgroundColor: getThemeColorHex(currentTheme, 'primary'),
+          hoverBorderColor: getThemeColorHex(currentTheme, 'primary'),
+        },
+      },
+    },
+  };
+
   return (
     <div className="w-full">
-      <ResponsiveContainer width="100%" height={400}>
-        <LineChart 
-          data={chartData} 
-          margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
-        >
-          <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
-          <XAxis 
-            dataKey="date" 
-            stroke="rgba(255,255,255,0.7)"
-            fontSize={12}
-            tickLine={false}
-            axisLine={false}
-          />
-          <YAxis 
-            stroke="rgba(255,255,255,0.7)"
-            fontSize={12}
-            tickLine={false}
-            axisLine={false}
-            domain={[yAxisMin, yAxisMax]}
-            tickFormatter={(value) => value.toFixed(0)}
-          />
-          <Tooltip 
-            content={<CustomTooltip />}
-            cursor={{ stroke: getThemeColorHex(currentTheme, 'primary'), strokeWidth: 2 }}
-          />
-          <Line
-            type="monotone"
-            dataKey="rating"
-            stroke={getThemeColorHex(currentTheme, 'primary')}
-            strokeWidth={3}
-            dot={{ fill: getThemeColorHex(currentTheme, 'primary'), strokeWidth: 2, r: 4 }}
-            activeDot={{ r: 6, stroke: getThemeColorHex(currentTheme, 'primary'), strokeWidth: 2 }}
-          />
-        </LineChart>
-      </ResponsiveContainer>
+      <div style={{ height: '400px' }}>
+        <Line data={chartConfig.data} options={chartConfig.options} />
+      </div>
 
       {/* Statistics */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-8">

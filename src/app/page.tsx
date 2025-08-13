@@ -1,15 +1,16 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Search, User, TrendingUp, Calendar, Play, ArrowLeft } from 'lucide-react';
+import { Search, User, TrendingUp, Calendar, Play, ArrowLeft, Loader2, Trophy } from 'lucide-react';
 import Link from 'next/link';
 import PlayerSearch from '@/components/PlayerSearch';
 import PlayerCard from '@/components/PlayerCard';
 import RatingChart from '@/components/RatingChart';
 import ThemeSwitcher from '@/components/ThemeSwitcher';
 import { Player, RatingHistory } from '@/types/chess';
+import { sampleRatingHistory } from '@/lib/sample-data';
 import { useTheme } from '@/lib/ThemeContext';
-import { getThemeClasses, getGradientClass } from '@/lib/themeUtils';
+import { getThemeClasses, getGradientClass, getAvatarGradientClass } from '@/lib/themeUtils';
 
 export default function ChessDashboard() {
   const { currentTheme } = useTheme();
@@ -17,32 +18,76 @@ export default function ChessDashboard() {
   const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null);
   const [ratingHistory, setRatingHistory] = useState<RatingHistory[]>([]);
   const [loading, setLoading] = useState(false);
+  const [showTopPlayers, setShowTopPlayers] = useState(false);
+  const [topPlayers, setTopPlayers] = useState<Player[]>([]);
+  const [loadingTopPlayers, setLoadingTopPlayers] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [resetSearch, setResetSearch] = useState(false);
 
   const fetchRatingHistory = async (playerId: string) => {
     setLoading(true);
+    setError(null);
     try {
       const response = await fetch(`/api/players/${playerId}/history`);
       if (response.ok) {
         const data = await response.json();
         console.log('Rating history data:', data);
-        // The API returns the games array directly, not wrapped in a ratings property
-        setRatingHistory(Array.isArray(data) ? data : []);
+        // Handle both direct array and wrapped response
+        const historyData = Array.isArray(data) ? data : (data.ratings || []);
+        setRatingHistory(historyData);
+      } else {
+        throw new Error(`Failed to fetch rating history: ${response.status}`);
       }
     } catch (error) {
       console.error('Error fetching rating history:', error);
+      setError('Failed to load rating history. Using sample data instead.');
+      setRatingHistory(sampleRatingHistory);
     } finally {
       setLoading(false);
     }
   };
 
+  const fetchTopPlayers = async () => {
+    setLoadingTopPlayers(true);
+    setError(null);
+    try {
+      const response = await fetch('/api/players/top?limit=10');
+      if (response.ok) {
+        const data = await response.json();
+        setTopPlayers(data.players || []);
+        setShowTopPlayers(true);
+      } else {
+        throw new Error(`Failed to fetch top players: ${response.status}`);
+      }
+    } catch (error) {
+      console.error('Error fetching top players:', error);
+      setError('Failed to load top players. Please try again.');
+    } finally {
+      setLoadingTopPlayers(false);
+    }
+  };
+
   const handlePlayerSelect = (player: Player) => {
     setSelectedPlayer(player);
+    setResetSearch(true);
     fetchRatingHistory(player.ECF_code);
+    
+    // Reset the resetSearch flag after a short delay
+    setTimeout(() => {
+      setResetSearch(false);
+    }, 100);
   };
 
   const handleBackToSearch = () => {
     setSelectedPlayer(null);
     setRatingHistory([]);
+    setError(null);
+  };
+
+  const handleBackToMain = () => {
+    setShowTopPlayers(false);
+    setTopPlayers([]);
+    setError(null);
   };
 
   return (
@@ -60,23 +105,104 @@ export default function ChessDashboard() {
             Track player ratings and performance over time
           </p>
           
-          {/* Demo Link - Only show when no player is selected */}
-          {!selectedPlayer && (
-            <Link 
-              href="/demo"
-              className={`inline-flex items-center gap-2 ${themeClasses.buttonPrimary} px-6 py-3 rounded-lg font-medium transition-colors`}
-            >
-              <Play className="w-5 h-5" />
-              Try Demo with Sample Data
-            </Link>
+          {/* Action Buttons - Only show when no player is selected and top players not shown */}
+          {!selectedPlayer && !showTopPlayers && (
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <button
+                onClick={fetchTopPlayers}
+                className={`inline-flex items-center gap-2 ${themeClasses.buttonPrimary} px-6 py-3 rounded-lg font-medium transition-colors`}
+              >
+                <Trophy className="w-5 h-5" />
+                View Top 10 Players
+              </button>
+              {/* <Link 
+                href="/demo"
+                className={`inline-flex items-center gap-2 ${themeClasses.buttonSecondary} px-6 py-3 rounded-lg font-medium transition-colors`}
+              >
+                <Play className="w-5 h-5" />
+                Try Demo
+              </Link> */}
+            </div>
           )}
         </div>
 
-        {/* Search Section */}
-        <div className="max-w-2xl mx-auto mb-12">
-          <PlayerSearch onPlayerSelect={handlePlayerSelect} />
-        </div>
+       
 
+                {/* Search Section */}
+        
+          <div className="max-w-2xl mx-auto mb-12">
+            <PlayerSearch onPlayerSelect={handlePlayerSelect} resetSearch={resetSearch} />
+          </div>
+       
+ {/* Top Players Section */}
+        {showTopPlayers && !selectedPlayer && (
+          <div className="mb-12">
+            {/* Back Button */}
+            <div className="flex justify-start mb-6">
+              <button
+                onClick={handleBackToMain}
+                className={`inline-flex items-center gap-2 ${themeClasses.buttonSecondary} px-4 py-2 rounded-lg font-medium transition-colors`}
+              >
+                <ArrowLeft className="w-4 h-4" />
+                Back to Main
+              </button>
+            </div>
+
+            <div className="max-w-6xl mx-auto">
+              <h3 className={`text-2xl font-bold ${themeClasses.textPrimary} mb-6 text-center flex items-center justify-center gap-2`}>
+                <Trophy className="w-6 h-6" />
+                Top 10 Players by Rating
+              </h3>
+              
+              {error && (
+                <div className="bg-red-500/20 border border-red-500/30 rounded-lg p-4 mb-6">
+                  <p className="text-red-300 text-sm">{error}</p>
+                </div>
+              )}
+              
+              {loadingTopPlayers ? (
+                <div className="flex items-center justify-center py-12">
+                  <Loader2 className="w-8 h-8 animate-spin text-blue-400" />
+                  <span className={`ml-2 ${themeClasses.textSecondary}`}>Loading top players...</span>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+                  {topPlayers.map((player, index) => (
+                    <button
+                      key={player.ECF_code}
+                      onClick={() => handlePlayerSelect(player)}
+                      className={`${themeClasses.surface} rounded-xl p-4 ${themeClasses.surfaceHover} transition-colors text-left relative`}
+                    >
+                      {/* Rank badge
+                      <div className="absolute top-2 right-2 w-6 h-6 bg-yellow-500 text-black text-xs font-bold rounded-full flex items-center justify-center">
+                        {index + 1}
+                      </div> */}
+                      
+                      <div className="flex items-center gap-3">
+                        <div className={`w-12 h-12 ${getAvatarGradientClass(currentTheme)} rounded-full flex items-center justify-center`}>
+                          <User className="w-6 h-6 text-white" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className={`${themeClasses.textPrimary} font-medium truncate`}>
+                            {player.full_name}
+                          </div>
+                          <div className={`${themeClasses.textSecondary} text-sm`}>
+                            Rating: {player.rating} • {player.title}
+                          </div>
+                          {player.federation && (
+                            <div className={`${themeClasses.textSecondary} text-xs`}>
+                              {player.federation}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
         {/* Player Information and Charts */}
         {selectedPlayer && (
           <div className="space-y-8">
@@ -87,25 +213,34 @@ export default function ChessDashboard() {
                 className={`inline-flex items-center gap-2 ${themeClasses.buttonSecondary} px-4 py-2 rounded-lg font-medium transition-colors`}
               >
                 <ArrowLeft className="w-4 h-4" />
-                Back to Search
+                Back to {showTopPlayers ? 'Top Players' : 'Search'}
               </button>
             </div>
 
             <PlayerCard player={selectedPlayer} ratingHistory={ratingHistory} />
             
-            {loading ? (
-              <div className="flex justify-center">
-                <div className={`animate-spin rounded-full h-12 w-12 border-b-2 ${themeClasses.border}`}></div>
-              </div>
-            ) : (
-              <div className={`${themeClasses.card} p-8`}>
-                <h2 className={`text-2xl font-bold ${themeClasses.textPrimary} mb-6 flex items-center gap-2`}>
-                  <TrendingUp className={`w-6 h-6 ${themeClasses.iconPrimary}`} />
-                  Rating History
-                </h2>
+            <div className={`${themeClasses.card} p-8`}>
+              <h2 className={`text-2xl font-bold ${themeClasses.textPrimary} mb-6 flex items-center gap-2`}>
+                <TrendingUp className={`w-6 h-6 ${themeClasses.iconPrimary}`} />
+                Rating History
+                {loading && <Loader2 className="w-5 h-5 animate-spin" />}
+              </h2>
+              
+              {error && (
+                <div className="bg-red-500/20 border border-red-500/30 rounded-lg p-4 mb-6">
+                  <p className="text-red-300 text-sm">{error}</p>
+                </div>
+              )}
+              
+              {loading ? (
+                <div className="flex items-center justify-center py-12">
+                  <Loader2 className="w-8 h-8 animate-spin text-blue-400" />
+                  <span className={`ml-2 ${themeClasses.textSecondary}`}>Loading rating history...</span>
+                </div>
+              ) : (
                 <RatingChart data={ratingHistory} />
-              </div>
-            )}
+              )}
+            </div>
           </div>
         )}
 
@@ -123,12 +258,12 @@ export default function ChessDashboard() {
             </div>
             
             <div className={`${themeClasses.card} p-6 text-center`}>
-              <User className={`w-12 h-12 ${themeClasses.iconPrimary} mx-auto mb-4`} />
+              <Trophy className={`w-12 h-12 ${themeClasses.iconPrimary} mx-auto mb-4`} />
               <h3 className={`text-xl font-semibold ${themeClasses.textPrimary} mb-2`}>
-                Player Profiles
+                Top Players
               </h3>
               <p className={themeClasses.textSecondary}>
-                View detailed player information and statistics
+                View the top 10 players by rating in England
               </p>
             </div>
             

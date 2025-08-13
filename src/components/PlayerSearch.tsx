@@ -17,6 +17,7 @@ export default function PlayerSearch({ onPlayerSelect }: PlayerSearchProps) {
   const [results, setResults] = useState<Player[]>([]);
   const [loading, setLoading] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [isSelecting, setIsSelecting] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -32,7 +33,7 @@ export default function PlayerSearch({ onPlayerSelect }: PlayerSearchProps) {
 
   useEffect(() => {
     const searchPlayers = async () => {
-      if (query.length < 2) {
+      if (query.length < 2 || isSelecting) {
         setResults([]);
         setShowDropdown(false);
         return;
@@ -56,12 +57,19 @@ export default function PlayerSearch({ onPlayerSelect }: PlayerSearchProps) {
 
     const debounceTimer = setTimeout(searchPlayers, 300);
     return () => clearTimeout(debounceTimer);
-  }, [query]);
+  }, [query, isSelecting]);
 
   const handlePlayerClick = (player: Player) => {
+    setIsSelecting(true);
     onPlayerSelect(player);
     setQuery(player.full_name);
     setShowDropdown(false);
+    setResults([]);
+    
+    // Reset the selecting flag after a short delay
+    setTimeout(() => {
+      setIsSelecting(false);
+    }, 100);
   };
 
   return (
@@ -81,7 +89,7 @@ export default function PlayerSearch({ onPlayerSelect }: PlayerSearchProps) {
       </div>
 
       {/* Dropdown Results */}
-      {showDropdown && results.length > 0 && (
+      {showDropdown && results.length > 0 && !isSelecting && (
         <div className={`absolute top-full left-0 right-0 mt-2 ${themeClasses.surface} ${themeClasses.border} rounded-xl overflow-hidden z-50 max-h-80 overflow-y-auto backdrop-blur-lg`}>
           {results.map((player) => (
             <button
