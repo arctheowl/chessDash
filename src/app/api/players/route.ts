@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { searchPlayers } from '@/lib/sample-data';
+
 
 // ECF API base URL
 const ECF_API_BASE = 'https://rating.englishchess.org.uk/v2/new/api.php?v2/players/';
@@ -38,16 +38,6 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(data);
   } catch (error) {
     console.error('Error fetching player data from ECF API, using sample data:', error);
-    
-    // Fallback to sample data
-    if (query) {
-      const sampleResults = searchPlayers(query);
-      return NextResponse.json({
-        players: sampleResults,
-        total: sampleResults.length,
-        source: 'sample-data'
-      });
-    }
     
     return NextResponse.json(
       { error: 'Failed to fetch player data' },

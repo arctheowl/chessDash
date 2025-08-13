@@ -7,7 +7,6 @@ import PlayerCard from '@/components/PlayerCard';
 import RatingChart from '@/components/RatingChart';
 import ThemeSwitcher from '@/components/ThemeSwitcher';
 import { Player, RatingHistory } from '@/types/chess';
-import { sampleRatingHistory } from '@/lib/sample-data';
 import { useTheme } from '@/lib/ThemeContext';
 import { getThemeClasses, getGradientClass, getAvatarGradientClass } from '@/lib/themeUtils';
 
@@ -62,7 +61,6 @@ export default function DemoPage() {
     } catch (error) {
       console.error('Error fetching rating history:', error);
       setError('Failed to load rating history. Using sample data instead.');
-      setRatingHistory(sampleRatingHistory);
     } finally {
       setLoadingRatingHistory(false);
     }

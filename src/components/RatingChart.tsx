@@ -13,7 +13,6 @@ import {
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 import { RatingHistory } from '@/types/chess';
-import { useState } from 'react';
 import { useTheme } from '@/lib/ThemeContext';
 import { getThemeClasses, getThemeColorHex } from '@/lib/themeUtils';
 
@@ -69,7 +68,7 @@ export default function RatingChart({ data }: RatingChartProps) {
       <div className="text-center py-12">
         <div className={`${themeClasses.textMuted} text-lg mb-2`}>No rating history available</div>
         <div className={`${themeClasses.textMuted} text-sm`}>
-          This player doesn't have any recorded rating history yet.
+          This player doesn`t have any recorded rating history yet.
         </div>
       </div>
     );

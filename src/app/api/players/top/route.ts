@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { samplePlayers } from '@/lib/sample-data';
 
 // ECF API base URL for top players
 const ECF_API_BASE = 'https://rating.englishchess.org.uk/v2/new/list_top_players.php?domain=S&age_limit=none&age_col=age31dec&nation=ENG&gender=both&type=rating&format=json';
@@ -43,16 +42,5 @@ export async function GET(request: NextRequest) {
     });
   } catch (error) {
     console.error('Error fetching top players from ECF API, using sample data:', error);
-    
-    // Fallback to sample data sorted by rating
-    const sortedSamplePlayers = [...samplePlayers]
-      .sort((a, b) => (b.rating || 0) - (a.rating || 0))
-      .slice(0, parseInt(limit));
-    
-    return NextResponse.json({
-      players: sortedSamplePlayers,
-      total: sortedSamplePlayers.length,
-      source: 'sample-data'
-    });
   }
 }

@@ -1,14 +1,12 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { Search, User, TrendingUp, Calendar, Play, ArrowLeft, Loader2, Trophy } from 'lucide-react';
-import Link from 'next/link';
+import { useState } from 'react';
+import { Search, User, TrendingUp, Calendar, ArrowLeft, Loader2, Trophy } from 'lucide-react';
 import PlayerSearch from '@/components/PlayerSearch';
 import PlayerCard from '@/components/PlayerCard';
 import RatingChart from '@/components/RatingChart';
 import ThemeSwitcher from '@/components/ThemeSwitcher';
 import { Player, RatingHistory } from '@/types/chess';
-import { sampleRatingHistory } from '@/lib/sample-data';
 import { useTheme } from '@/lib/ThemeContext';
 import { getThemeClasses, getGradientClass, getAvatarGradientClass } from '@/lib/themeUtils';
 
@@ -22,7 +20,6 @@ export default function ChessDashboard() {
   const [topPlayers, setTopPlayers] = useState<Player[]>([]);
   const [loadingTopPlayers, setLoadingTopPlayers] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [resetSearch, setResetSearch] = useState(false);
 
   const fetchRatingHistory = async (playerId: string) => {
     setLoading(true);
@@ -41,7 +38,6 @@ export default function ChessDashboard() {
     } catch (error) {
       console.error('Error fetching rating history:', error);
       setError('Failed to load rating history. Using sample data instead.');
-      setRatingHistory(sampleRatingHistory);
     } finally {
       setLoading(false);
     }
@@ -69,13 +65,7 @@ export default function ChessDashboard() {
 
   const handlePlayerSelect = (player: Player) => {
     setSelectedPlayer(player);
-    setResetSearch(true);
     fetchRatingHistory(player.ECF_code);
-    
-    // Reset the resetSearch flag after a short delay
-    setTimeout(() => {
-      setResetSearch(false);
-    }, 100);
   };
 
   const handleBackToSearch = () => {
@@ -128,10 +118,10 @@ export default function ChessDashboard() {
 
        
 
-                {/* Search Section */}
-        
+        {/* Search Section */}
+       
           <div className="max-w-2xl mx-auto mb-12">
-            <PlayerSearch onPlayerSelect={handlePlayerSelect} resetSearch={resetSearch} />
+            <PlayerSearch onPlayerSelect={handlePlayerSelect} />
           </div>
        
  {/* Top Players Section */}
@@ -167,7 +157,7 @@ export default function ChessDashboard() {
                 </div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
-                  {topPlayers.map((player, index) => (
+                  {topPlayers.map((player) => (
                     <button
                       key={player.ECF_code}
                       onClick={() => handlePlayerSelect(player)}

@@ -3,7 +3,7 @@
 import { User, Trophy, MapPin, Calendar, Hash } from 'lucide-react';
 import { Player, RatingHistory } from '@/types/chess';
 import { useTheme } from '@/lib/ThemeContext';
-import { getThemeClasses, getIconColorClass, getAvatarGradientClass, getTitleBadgeClass } from '@/lib/themeUtils';
+import { getThemeClasses, getAvatarGradientClass, getTitleBadgeClass } from '@/lib/themeUtils';
 
 interface PlayerCardProps {
   player: Player;
