@@ -82,7 +82,7 @@ export default function PlayerSearch({ onPlayerSelect }: PlayerSearchProps) {
 
       {/* Dropdown Results */}
       {showDropdown && results.length > 0 && (
-        <div className={`absolute top-full left-0 right-0 mt-2 ${themeClasses.surface} ${themeClasses.border} rounded-xl overflow-hidden z-50 max-h-80 overflow-y-auto`}>
+        <div className={`absolute top-full left-0 right-0 mt-2 ${themeClasses.surface} ${themeClasses.border} rounded-xl overflow-hidden z-50 max-h-80 overflow-y-auto backdrop-blur-lg`}>
           {results.map((player) => (
             <button
               key={player.ECF_code}

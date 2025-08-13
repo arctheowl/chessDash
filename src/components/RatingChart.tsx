@@ -45,10 +45,7 @@ export default function RatingChart({ data }: RatingChartProps) {
     opponent: item.opponent_name,
     event: item.event_name,
     score: item.score,
-    // Preserve original fields for tooltip
-    originalEvent: item.event_name,
-    originalOpponent: item.opponent_name,
-    originalScore: item.score,
+   
     // Add unique key for proper re-rendering
     key: `${item.game_date}-${item.opponent_name}-${index}`,
     index: index
@@ -79,19 +76,24 @@ export default function RatingChart({ data }: RatingChartProps) {
           <p style={{ color: getThemeColorHex(currentTheme, 'primary') }} className="font-semibold">
             {`Rating: ${payload[0].value}`}
           </p>
-          {actualData?.originalEvent && (
+          {actualData?.event_name && (
             <p className="text-gray-600 text-sm">
-              {`Event: ${actualData.originalEvent}`}
+              {`Event: ${actualData.event_name}`}
             </p>
           )}
-          {actualData?.originalOpponent && (
+          {actualData?.opponent_name && (
             <p className="text-gray-600 text-sm">
-              {`Opponent: ${actualData.originalOpponent}`}
+              {`Opponent: ${actualData.opponent_name}`}
             </p>
           )}
-          {actualData?.originalScore && (
+          {actualData?.opponent_rating && (
             <p className="text-gray-600 text-sm">
-              {`Result: ${getResultText(actualData.originalScore)}`}
+              {`Opponent Rating: ${actualData.opponent_rating}`}
+            </p>
+          )}
+          {actualData?.score && (
+            <p className="text-gray-600 text-sm">
+              {`Result: ${getResultText(actualData.score)}`}
             </p>
           )}
         </div>
@@ -122,16 +124,10 @@ export default function RatingChart({ data }: RatingChartProps) {
   return (
     <div className="w-full">
       <ResponsiveContainer width="100%" height={400}>
-        <AreaChart 
+        <LineChart 
           data={chartData} 
           margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
         >
-          <defs>
-            <linearGradient id="ratingGradient" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor={getThemeColorHex(currentTheme, 'primary')} stopOpacity={0.3}/>
-              <stop offset="95%" stopColor={getThemeColorHex(currentTheme, 'primary')} stopOpacity={0.1}/>
-            </linearGradient>
-          </defs>
           <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
           <XAxis 
             dataKey="date" 
@@ -152,16 +148,15 @@ export default function RatingChart({ data }: RatingChartProps) {
             content={<CustomTooltip />}
             cursor={{ stroke: getThemeColorHex(currentTheme, 'primary'), strokeWidth: 2 }}
           />
-          <Area
+          <Line
             type="monotone"
             dataKey="rating"
             stroke={getThemeColorHex(currentTheme, 'primary')}
             strokeWidth={3}
-            fill="url(#ratingGradient)"
             dot={{ fill: getThemeColorHex(currentTheme, 'primary'), strokeWidth: 2, r: 4 }}
             activeDot={{ r: 6, stroke: getThemeColorHex(currentTheme, 'primary'), strokeWidth: 2 }}
           />
-        </AreaChart>
+        </LineChart>
       </ResponsiveContainer>
 
       {/* Statistics */}
